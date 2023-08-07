@@ -60,5 +60,14 @@ public class TeacherController {
         return ResponseEntity.ok(foundTeachers);
     }
 
+    //Update teacher by id
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,Teacher>> updateTeacher(@Valid @PathVariable Long id, @RequestBody Teacher teacher){
+        Teacher updatedTeacher = teacherService.updateTeacherById(id, teacher);
+        Map<String,Teacher> response = new HashMap<>();
+        response.put("Updated Teacher: ", updatedTeacher);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

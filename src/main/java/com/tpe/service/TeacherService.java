@@ -55,4 +55,27 @@ public class TeacherService {
 
         return teacherList;
     }
+
+    public Teacher updateTeacherById(Long id, Teacher teacher) {
+        //Found the teacher to be updated.
+        Teacher teacherToBeUpdated = findTeacherById(id);
+
+        //We need to check if updated email is used for another teacher before.
+        if (!teacherToBeUpdated.getEmail().equals(teacher.getEmail())) {
+            //If user entered a new email for the teacher, we need to check if the new email is already in use or not.
+            Teacher foundTeacherByEmail = teacherRepository.findByEmail(teacher.getEmail());
+            if (foundTeacherByEmail != null) //if the search with the new email found an entity..
+                throw new ConflictException("There is already a teacher with this email!");
+        }
+
+        teacherToBeUpdated.setName(teacher.getName());
+        teacherToBeUpdated.setLastName(teacher.getLastName());
+        teacherToBeUpdated.setEmail(teacher.getEmail());
+        teacherToBeUpdated.setPhoneNumber(teacher.getPhoneNumber());
+        teacherToBeUpdated.setBookList(teacher.getBookList());
+
+        teacherRepository.save(teacherToBeUpdated);
+
+        return teacherToBeUpdated;
+    }
 }
