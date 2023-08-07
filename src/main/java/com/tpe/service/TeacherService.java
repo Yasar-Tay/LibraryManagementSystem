@@ -46,4 +46,13 @@ public class TeacherService {
         Teacher foundTeacher = findTeacherById(id);
         teacherRepository.delete(foundTeacher);
     }
+
+    public List<Teacher> findTeacherByLastName(String lastName) {
+        List<Teacher> teacherList = teacherRepository.findByLastName(lastName);
+
+        if (teacherList.isEmpty())
+            throw new RuntimeException("No Teacher with last name : " + lastName);
+
+        return teacherList;
+    }
 }

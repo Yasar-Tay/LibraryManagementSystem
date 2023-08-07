@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/teachers") //http;//localhost:8081/teachers
+@RequestMapping("/teachers") //http://localhost:8081/teachers
 public class TeacherController {
 
     @Autowired
@@ -35,16 +35,29 @@ public class TeacherController {
         return new ResponseEntity<>(teacherList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") //http://localhost:8081/teachers/{id}
     public ResponseEntity<Teacher> getTeacherById(@PathVariable("id") Long id){
         Teacher foundTeacher = teacherService.findTeacherById(id);
         return ResponseEntity.ok(foundTeacher);
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("/query") //http://localhost:8081/teachers/query?id={id}
+    public ResponseEntity<Teacher> getTeacherByIdWithRequest(@RequestParam Long id){
+        Teacher foundTeacher = teacherService.findTeacherById(id);
+        return ResponseEntity.ok(foundTeacher);
+    }
+
+    @DeleteMapping("/{id}") //http://localhost:8081/teachers/{id}
     public ResponseEntity<String> deleteTeacher(@PathVariable("id") Long id){
         teacherService.deleteTeacher(id);
         return new ResponseEntity<>(String.format("Teacher with id: %s is successfully deleted.", id), HttpStatus.OK);
+    }
+
+    //find Teacher by lastname
+    @GetMapping("/byLastName") //http://localhost:8081/teachers/byLastName?lastName={lastName}
+    public ResponseEntity<List<Teacher>> getTeacherByLastNamePath(@RequestParam String lastName){
+        List<Teacher> foundTeachers = teacherService.findTeacherByLastName(lastName);
+        return ResponseEntity.ok(foundTeachers);
     }
 
 
