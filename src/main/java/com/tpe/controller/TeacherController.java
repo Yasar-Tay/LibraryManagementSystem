@@ -35,4 +35,17 @@ public class TeacherController {
         return new ResponseEntity<>(teacherList, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Teacher> getTeacherById(@PathVariable("id") Long id){
+        Teacher foundTeacher = teacherService.findTeacherById(id);
+        return ResponseEntity.ok(foundTeacher);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTeacher(@PathVariable("id") Long id){
+        teacherService.deleteTeacher(id);
+        return new ResponseEntity<>(String.format("Teacher with id: %s is successfully deleted.", id), HttpStatus.OK);
+    }
+
+
 }

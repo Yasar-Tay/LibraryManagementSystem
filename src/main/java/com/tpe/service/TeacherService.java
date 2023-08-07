@@ -5,9 +5,11 @@ import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeacherService {
@@ -19,7 +21,7 @@ public class TeacherService {
     public void saveTeacher(Teacher teacher) {
         Teacher existingTeacher = teacherRepository.findByEmail(teacher.getEmail());
 
-        if (existingTeacher != null){
+        if (existingTeacher != null) {
             throw new ConflictException(String.format("Teacher with email: %s already exists!", teacher.getEmail()));
         }
 
@@ -33,5 +35,15 @@ public class TeacherService {
             throw new ResourceNotFoundException("No teacher...");
 
         return teacherList;
+    }
+
+    public Teacher findTeacherById(Long id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Teacher with id: %s not found!", id)));
+    }
+
+    public void deleteTeacher(Long id) {
+        Teacher foundTeacher = findTeacherById(id);
+        teacherRepository.delete(foundTeacher);
     }
 }
