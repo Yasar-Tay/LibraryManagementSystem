@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -86,23 +87,34 @@ public class TeacherService {
 
     public Teacher updateTeacherByDTO(Long teacherId, TeacherDTO teacherDTO) {
         //Found the teacher to be updated.
-        Teacher teacherToBeUpdated = findTeacherById(teacherId);
+        Teacher existingTeacher = findTeacherById(teacherId);
 
         //We need to check if updated email is used for another teacher before.
-        if (!teacherToBeUpdated.getEmail().equals(teacherDTO.getEmail())) {
+        if (!existingTeacher.getEmail().equals(teacherDTO.getEmail())) {
             //If user entered a new email for the teacher, we need to check if the new email is already in use or not.
             Teacher foundTeacherByEmail = teacherRepository.findByEmail(teacherDTO.getEmail());
 
             if (foundTeacherByEmail != null) //if the search with the new email found an entity.
-                throw new ConflictException("There is already a teacher with this email!");
+                throw new ConflictException("There is already a teacher with this email! :P");
         }
 
-        teacherToBeUpdated.setId(teacherDTO.getId());
-        teacherToBeUpdated.setName(teacherDTO.getName());
-        teacherToBeUpdated.setLastName(teacherDTO.getLastName());
-        teacherToBeUpdated.setEmail(teacherDTO.getEmail());
-        teacherToBeUpdated.setPhoneNumber(teacherDTO.getPhoneNumber());
+        existingTeacher.setName(teacherDTO.getName());
+        existingTeacher.setLastName(teacherDTO.getLastName());
+        existingTeacher.setEmail(teacherDTO.getEmail());
+        existingTeacher.setPhoneNumber(teacherDTO.getPhoneNumber());
 
-        return teacherRepository.save(teacherToBeUpdated);
+
+        return teacherRepository.save(existingTeacher);
+    }
+
+    public List<TeacherDTO> findAllTeachersDTO() {
+        return findAllTeachers().stream()
+                .map(t->new TeacherDTO(t))
+                .collect(Collectors.toList());
+    }
+
+    public TeacherDTO findTeacherDtoById(Long id) {
+        return teacherRepository.findTeacherDTO(id).orElseThrow(() ->
+                new ResourceNotFoundException("No Teacher with id: " + id));
     }
 }

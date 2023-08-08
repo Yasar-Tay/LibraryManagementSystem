@@ -1,6 +1,7 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Book;
+import com.tpe.dto.BookDTO;
 import com.tpe.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,9 +62,18 @@ public class BookController {
         return ResponseEntity.ok(message);
     }
 
-    @PutMapping("/{id}") //http://localhost:8081/books/{id}
+    /*@PutMapping("/{id}") //http://localhost:8081/books/{id}
     public ResponseEntity<Map<String,Book>> updateBook(@Valid @PathVariable Long id, @RequestBody Book book){
         Book updatedBook = bookService.updateBook(id, book);
+        Map<String,Book> response = new HashMap<>();
+        response.put("Successfully updated book: ", updatedBook);
+        return ResponseEntity.ok(response);
+    }*/
+
+    @PutMapping("/{bookId}") //http://localhost:8081/books/{id}
+    public ResponseEntity<Map<String,Book>> updateBook(@PathVariable Long bookId,
+                                                       @Valid @RequestBody BookDTO bookDTO){
+        Book updatedBook = bookService.updateBookByDto(bookId, bookDTO);
         Map<String,Book> response = new HashMap<>();
         response.put("Successfully updated book: ", updatedBook);
         return ResponseEntity.ok(response);

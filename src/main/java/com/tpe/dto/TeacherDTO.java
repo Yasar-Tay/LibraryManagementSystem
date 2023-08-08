@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TeacherDTO {
 
-    private Long id;
-
     @NotNull(message = "Name can not be null")
     @NotBlank(message = "Name can not be white space")
     @Size(min = 2, max = 25, message = " Name(${validatedValue}) must be between {min} and {max} characters")
@@ -34,16 +32,11 @@ public class TeacherDTO {
     @NotBlank(message = "Please provide a proper phone number..")
     private String phoneNumber;
 
-    @Setter(AccessLevel.NONE)
-    private LocalDateTime registerDate;
-
     public TeacherDTO(Teacher teacher){
-        this.id = teacher.getId();
         this.name = teacher.getName();
         this.lastName = teacher.getLastName();
         this.email = teacher.getEmail();
         this.phoneNumber = teacher.getPhoneNumber();
-        this.registerDate = teacher.getRegisterDate();
     }
 
 }

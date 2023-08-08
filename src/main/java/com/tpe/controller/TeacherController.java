@@ -86,14 +86,29 @@ public class TeacherController {
     }
 
     //Update teacher by id - DTO
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String,Teacher>> updateTeacher(@PathVariable("id") Long teacherId,
+    @PutMapping("/{teacherId}")
+    public ResponseEntity<Map<String,Teacher>> updateTeacher(@PathVariable Long teacherId,
                                                              @Valid @RequestBody TeacherDTO teacherDTO){
         Teacher updatedTeacher = teacherService.updateTeacherByDTO(teacherId, teacherDTO);
         Map<String,Teacher> response = new HashMap<>();
         response.put("Updated Teacher: ", updatedTeacher);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    //get all teachers by DTO
+    @GetMapping("/dto")
+    public ResponseEntity<List<TeacherDTO>> getAllTeachersDTO(){
+        List<TeacherDTO> teacherDtoList = teacherService.findAllTeachersDTO();
+        return ResponseEntity.ok(teacherDtoList);
+    }
+
+    //get teacher by Id over DTO
+    @GetMapping("/query/dto")
+    public ResponseEntity<TeacherDTO> getTeacherDtoById(@RequestParam Long id) {
+        TeacherDTO teacherDTO = teacherService.findTeacherDtoById(id);
+        return ResponseEntity.ok(teacherDTO);
+    }
+
 
 
 }

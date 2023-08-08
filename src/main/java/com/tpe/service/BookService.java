@@ -1,6 +1,7 @@
 package com.tpe.service;
 
 import com.tpe.domain.Book;
+import com.tpe.dto.BookDTO;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,16 @@ public class BookService {
 
     public Page<Book> fetchBooksByPage(Pageable pageable) {
         return bookRepository.findAll(pageable);
+    }
+
+    public Book updateBookByDto(Long bookId, BookDTO bookDTO) {
+        Book bookToBeUpdated = getBookById(bookId);
+
+        //Update Process
+        bookToBeUpdated.setTitle(bookDTO.getTitle());
+        bookToBeUpdated.setAuthor(bookDTO.getAuthor());
+        bookToBeUpdated.setPublishDate(bookDTO.getPublishDate());
+
+        return bookRepository.save(bookToBeUpdated);
     }
 }
