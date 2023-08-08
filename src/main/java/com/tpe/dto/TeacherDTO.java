@@ -1,23 +1,21 @@
-package com.tpe.domain;
+package com.tpe.dto;
 
+import com.tpe.domain.Teacher;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Column;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tbl_teacher")
-public class Teacher {
+public class TeacherDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Name can not be null")
@@ -39,14 +37,13 @@ public class Teacher {
     @Setter(AccessLevel.NONE)
     private LocalDateTime registerDate;
 
-    @ManyToMany
-    @JoinTable(name = "teacher_book",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private List<Book> bookList = new ArrayList<>();
-
-    @PrePersist
-    public void setRegisterDate() {
-        registerDate = LocalDateTime.now();
+    public TeacherDTO(Teacher teacher){
+        this.id = teacher.getId();
+        this.name = teacher.getName();
+        this.lastName = teacher.getLastName();
+        this.email = teacher.getEmail();
+        this.phoneNumber = teacher.getPhoneNumber();
+        this.registerDate = teacher.getRegisterDate();
     }
+
 }

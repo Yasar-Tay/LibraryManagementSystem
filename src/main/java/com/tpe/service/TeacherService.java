@@ -1,10 +1,13 @@
 package com.tpe.service;
 
 import com.tpe.domain.Teacher;
+import com.tpe.dto.TeacherDTO;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +67,7 @@ public class TeacherService {
         if (!teacherToBeUpdated.getEmail().equals(teacher.getEmail())) {
             //If user entered a new email for the teacher, we need to check if the new email is already in use or not.
             Teacher foundTeacherByEmail = teacherRepository.findByEmail(teacher.getEmail());
-            if (foundTeacherByEmail != null) //if the search with the new email found an entity..
+            if (foundTeacherByEmail != null) //if the search with the new email found an entity.
                 throw new ConflictException("There is already a teacher with this email!");
         }
 
@@ -74,8 +77,32 @@ public class TeacherService {
         teacherToBeUpdated.setPhoneNumber(teacher.getPhoneNumber());
         teacherToBeUpdated.setBookList(teacher.getBookList());
 
-        teacherRepository.save(teacherToBeUpdated);
+        return teacherRepository.save(teacherToBeUpdated);
+    }
 
-        return teacherToBeUpdated;
+    public Page<Teacher> getTeachersByPage(Pageable pageable) {
+        return teacherRepository.findAll(pageable);
+    }
+
+    public Teacher updateTeacherByDTO(Long teacherId, TeacherDTO teacherDTO) {
+        //Found the teacher to be updated.
+        Teacher teacherToBeUpdated = findTeacherById(teacherId);
+
+        //We need to check if updated email is used for another teacher before.
+        if (!teacherToBeUpdated.getEmail().equals(teacherDTO.getEmail())) {
+            //If user entered a new email for the teacher, we need to check if the new email is already in use or not.
+            Teacher foundTeacherByEmail = teacherRepository.findByEmail(teacherDTO.getEmail());
+
+            if (foundTeacherByEmail != null) //if the search with the new email found an entity.
+                throw new ConflictException("There is already a teacher with this email!");
+        }
+
+        teacherToBeUpdated.setId(teacherDTO.getId());
+        teacherToBeUpdated.setName(teacherDTO.getName());
+        teacherToBeUpdated.setLastName(teacherDTO.getLastName());
+        teacherToBeUpdated.setEmail(teacherDTO.getEmail());
+        teacherToBeUpdated.setPhoneNumber(teacherDTO.getPhoneNumber());
+
+        return teacherRepository.save(teacherToBeUpdated);
     }
 }

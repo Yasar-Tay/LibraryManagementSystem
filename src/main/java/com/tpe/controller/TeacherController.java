@@ -1,8 +1,13 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Teacher;
+import com.tpe.dto.TeacherDTO;
 import com.tpe.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,9 +66,30 @@ public class TeacherController {
     }
 
     //Update teacher by id
-    @PutMapping("/{id}")
+    /*@PutMapping("/{id}")
     public ResponseEntity<Map<String,Teacher>> updateTeacher(@Valid @PathVariable Long id, @RequestBody Teacher teacher){
         Teacher updatedTeacher = teacherService.updateTeacherById(id, teacher);
+        Map<String,Teacher> response = new HashMap<>();
+        response.put("Updated Teacher: ", updatedTeacher);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }*/
+
+    @GetMapping("/page") //http://localhost:8081/teachers/page?page=1&size=3&sort=name&direction=ASC/DESC
+    public ResponseEntity<Page<Teacher>> getTeachersByPage(@RequestParam("page") int pageCount, //How Many Pages do we want
+                                                           @RequestParam("size") int sizeOfOnePage, //How many objects will each page have
+                                                           @RequestParam("sort") String sortProp, //Which property will be used for sorting
+                                                           @RequestParam("direction")Sort.Direction direction) { //ASC or DESC
+
+        Pageable pageable = PageRequest.of(pageCount, sizeOfOnePage, Sort.by(direction, sortProp));
+        Page<Teacher> teacherPage = teacherService.getTeachersByPage(pageable);
+        return ResponseEntity.ok(teacherPage);
+    }
+
+    //Update teacher by id - DTO
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,Teacher>> updateTeacher(@PathVariable("id") Long teacherId,
+                                                             @Valid @RequestBody TeacherDTO teacherDTO){
+        Teacher updatedTeacher = teacherService.updateTeacherByDTO(teacherId, teacherDTO);
         Map<String,Teacher> response = new HashMap<>();
         response.put("Updated Teacher: ", updatedTeacher);
         return new ResponseEntity<>(response, HttpStatus.OK);
