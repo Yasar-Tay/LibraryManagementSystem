@@ -117,4 +117,14 @@ public class TeacherService {
         return teacherRepository.findTeacherDTO(id).orElseThrow(() ->
                 new ResourceNotFoundException("No Teacher with id: " + id));
     }
+
+
+    public List<Teacher> findTeacherByLastNameUsingJPQL(String lastName) {
+        List<Teacher> teacherList = teacherRepository.findByLastNameUsingJPQL(lastName);
+
+        if (teacherList.isEmpty())
+            throw new ResourceNotFoundException("No teacher with last name: " + lastName);
+
+        return teacherList;
+    }
 }

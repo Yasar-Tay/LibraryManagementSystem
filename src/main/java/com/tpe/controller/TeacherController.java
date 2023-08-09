@@ -109,6 +109,14 @@ public class TeacherController {
         return ResponseEntity.ok(teacherDTO);
     }
 
+    //get Teacher By lastname using JPQL
+    @GetMapping("/byLastNameJPQL")  //http://localhost:8081/teachers/byLastNameJPQL?lastName="Ali"
+    public ResponseEntity<List<Teacher>> getTeacherByLastNameOverJPQL(@RequestParam String lastName){
+        List<Teacher> teacherList = teacherService.findTeacherByLastNameUsingJPQL(lastName);
+        return ResponseEntity.ok(teacherList);
+    }
+
+
 
 
 }
